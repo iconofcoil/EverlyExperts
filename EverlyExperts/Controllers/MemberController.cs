@@ -52,6 +52,12 @@ namespace EverlyExperts.Controllers
                 }
 
                 var memberEntity = mapper.Map<Member>(member);
+
+                // Gets url from shortUrl
+                memberEntity.WebsiteUrl = await HtmlHelper.ConvertShortUrlToUrl(memberEntity.WebsiteShortUrl);
+
+                // Gets h1 h2 h3 text content
+                memberEntity.WebsiteTopics = await HtmlHelper.ParseHtmlHeadings1to3(memberEntity.WebsiteUrl);
                 
                 repository.Member.CreateMember(memberEntity);
                 

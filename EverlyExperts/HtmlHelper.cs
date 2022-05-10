@@ -3,11 +3,11 @@ using System.Text;
 
 namespace EverlyExperts
 {
-    static class HtmlHelper
+    public static class HtmlHelper
     {
-        static async Task<string> ConvertShortUrlToUrl(string shortUrl)
+        public static async Task<string> ConvertShortUrlToUrl(string shortUrl)
         {
-            var html = string.Empty;
+            var longUrl = string.Empty;
 
             try
             {
@@ -16,23 +16,37 @@ namespace EverlyExperts
                     handler.AllowAutoRedirect = false;
                     using (var client = new HttpClient(handler))
                     {
-                        var response = await client.GetAsync("https://cutt.ly/4G67enp");
+                        var response = await client.GetAsync(shortUrl);
 
-                        var longUrl = response?.Headers.Location?.ToString();
-                        html = await client.GetStringAsync("https://www.w3schools.com/html/html_headings.asp");
+                        longUrl = response?.Headers.Location?.ToString();
                     }
                 }
             }
             catch
             {
-                html = string.Empty;
+                longUrl = string.Empty;
             }
 
-            return html;
+            return longUrl;
         }
 
-        static string ParseHtmlHeadings1to3(string html)
+        public static async Task<string> ParseHtmlHeadings1to3(string url)
         {
+            string html = string.Empty;
+            
+            try
+            {
+                using (var handler = new HttpClientHandler())
+                using (var client = new HttpClient(handler))
+                {
+                    html = await client.GetStringAsync(url);
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+
             StringBuilder sb = new StringBuilder();
 
             var htmlDoc = new HtmlDocument();
