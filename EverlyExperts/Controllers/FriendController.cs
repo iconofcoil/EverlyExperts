@@ -21,7 +21,7 @@ namespace EverlyExperts.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetFriendsByMemberId(int id)
         {
             try
@@ -29,6 +29,36 @@ namespace EverlyExperts.Controllers
                 var friends = await repository.Friend.GetAllFriendsByMemberIdAsync(id);
 
                 return Ok(friends);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet("GetByTopic/{memberId}/{topic}")]
+        public async Task<IActionResult> GetExpertsByMemberId(int memberId, string topic)
+        {
+            try
+            {
+                var friends = await repository.Friend.GetAllFriendsByMemberIdAsync(memberId);
+
+                FriendHelper.InitHelper(repository);
+                List<Stack<Friend>> expertsPaths = await FriendHelper.GetPathsToFriendsByTopic(friends, topic, false);
+
+                List<List<Friend>> experts = new List<List<Friend>>();
+                if (expertsPaths.Count > 0)
+                {
+                    List<Friend> expert = new List<Friend>();
+                    foreach (Stack<Friend> expertPath in expertsPaths)
+                    {
+                        expert.Add(expertPath.Pop());
+                    }
+
+                    experts.Add(expert);
+                }
+
+                return Ok(experts);
             }
             catch
             {
