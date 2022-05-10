@@ -44,8 +44,9 @@ namespace EverlyExperts.Controllers
                 var friends = await repository.Friend.GetAllFriendsByMemberIdAsync(memberId);
 
                 FriendHelper.InitHelper(repository);
-                List<Stack<Friend>> expertsPaths = await FriendHelper.GetPathsToFriendsByTopic(friends, topic, false);
+                List<Stack<Friend>> expertsPaths = await FriendHelper.GetPathsToFriendsByTopic(friends, topic, memberId, false);
 
+                // Reverse stack paths to return first -> ... -> last
                 List<List<Friend>> experts = new List<List<Friend>>();
                 if (expertsPaths.Count > 0)
                 {
