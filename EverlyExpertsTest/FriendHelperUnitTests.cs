@@ -20,6 +20,7 @@ namespace EverlyExpertsTest
 
         public FriendHelperUnitTests()
         {
+            // Initial setup for the Mock Repository
             IList<Friend> friends = new List<Friend>();
 
             friends.Add(new Friend() { FriendId = 2, MemberId = 1, FriendMember = new Member() { Id = 2, Name = "Maria", WebsiteTopics = "Climate Change" } });
